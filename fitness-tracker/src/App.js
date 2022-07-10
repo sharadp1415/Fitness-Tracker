@@ -10,10 +10,12 @@ import SignIn from "./pages/SignIn";
 function App() {
     return (
         <Router>
-            <Routes>
-                <Route exact path="/" element={<SignIn />} />
-                <Route path="/sign-up" />
-            </Routes>
+            <ThemeProvider theme={theme}>
+                <Routes>
+                    <Route exact path="/" element={<SignIn />} />
+                    <Route path="/sign-up" />
+                </Routes>
+            </ThemeProvider>
         </Router>
     );
 }

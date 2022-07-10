@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -13,30 +13,32 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import useStyles from '../config/theme-signup.config';
+import Copyright from '../components/Copyright';
+
 
 const theme = createTheme();
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
+  
+  const classes = useStyles();
+
+  const initialUser = {id: null, email: '', password: '', error: null, auth: null}
+
+  const [user, setUser] = useState(initialUser);
+
+  const handleChange = e => {
+    const {name, value} = e.target;
+    setUser({...user, [name]: value})
+  }
+
+  const handleSubmit = e => {
+
+  }
+
+  const isValid = user.email === '' || user.password === '';
+
+  console.log(user);
 
   return (
     <ThemeProvider theme={theme}>
@@ -66,6 +68,7 @@ export default function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={handleChange}
             />
             <TextField
               margin="normal"
@@ -76,6 +79,7 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={handleChange}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -85,6 +89,8 @@ export default function SignIn() {
               type="submit"
               fullWidth
               variant="contained"
+              onClick={handleSubmit}
+              disabled={isValid}
               sx={{ mt: 3, mb: 2 }}
             >
               Sign In
