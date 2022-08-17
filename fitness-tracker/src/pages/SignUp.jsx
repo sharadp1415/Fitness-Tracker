@@ -33,6 +33,9 @@ function SignUp(props) {
     props.firebase.doCreateUserWithEmailAndPassword(user.email, user.password)
     // Later add user also to database
     .then(authUser => {
+      return props.firebase.addUser(authUser.user.uid, user.name, user.email);
+    })
+    .then(authUser => {
       setUser(initialUser);
     })
     .catch(error => {

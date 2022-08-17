@@ -24,6 +24,8 @@ import { AuthUserContext, withAuthentication } from '../components/Session';
 import useStyles from '../config/theme.dashboard';
 import Copyright from '../components/Copyright';
 import Sidebar from '../components/Sidebar';
+import Calendar from '../components/Calendar';
+import { blue } from '@material-ui/core/colors';
 
 function Dashboard(props) {
 //   let match = useRouteMatch();
@@ -75,12 +77,14 @@ const signOut = () => {
 
         <main className={classes.content }>
         <div className={classes.appBarSpacer } />
+        <div style={{margin: 100}}>
         <Container maxWidth="xl" className={classes.container}>
-            Calendar
+            <Calendar firebase={props.firebase} authUser={authUser} />
             <Box pt={4}>
                 <Copyright />
             </Box>
         </Container>
+        </div>
         </main>
         
     </div>

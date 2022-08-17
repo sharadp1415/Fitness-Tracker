@@ -7,6 +7,7 @@ import {
     signOut,
     sendPasswordResetEmail,
 } from "firebase/auth";
+import { getDatabase, ref, set, child, push } from "firebase/database";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -28,7 +29,7 @@ class Firebase {
         const app = initializeApp(firebaseConfig);
         // app.initializeApp(firebaseConfig);
         this.auth = getAuth(app);
-        // this.db = app.database(); Later add database
+        this.db = getDatabase(app);
     }
 
     /*** Authentication  ***/
@@ -43,6 +44,28 @@ class Firebase {
     doSignOut = () => signOut(this.auth);
 
     doPasswordReset = (email) => sendPasswordResetEmail(this.auth, email);
+
+    addUser = (uid, name, email) => {
+        return set(ref(this.db, `users/${uid}`), {
+            username: name,
+            email: email,
+            activities: "not set",
+        });
+    };
+    users = () => this.db.ref("users");
+
+    addActivity = (uid, activity) => {
+        // const ref = this.db.ref().child(`users/${uid}/activities`);
+        const reference = child(ref(this.db), `users/${uid}/activities`);
+        push(reference, activity);
+    };
+
+    // updateActivity = (uid, activity, activityKey) => {
+    //     const ref = this.db
+    //         .ref()
+    //         .child(`users/${uid}/activities/${activityKey}`);
+    //     ref.update(activity);
+    // };
 }
 
 export default Firebase;
