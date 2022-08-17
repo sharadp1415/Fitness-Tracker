@@ -1,5 +1,12 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    sendPasswordResetEmail,
+} from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -13,26 +20,29 @@ const firebaseConfig = {
     appId: "1:437211037563:web:4b7f80271545179fd587de",
 };
 
-// // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// // // Initialize Firebase
+// const app = initializeApp(firebaseConfig);
 
 class Firebase {
     constructor() {
-        app.initializeApp(firebaseConfig);
-        this.auth = app.auth();
+        const app = initializeApp(firebaseConfig);
+        // app.initializeApp(firebaseConfig);
+        this.auth = getAuth(app);
         // this.db = app.database(); Later add database
     }
 
     /*** Authentication  ***/
     doCreateUserWithEmailAndPassword = (email, password) =>
-        this.auth.createUserWithEmailAndPassword(email, password);
+        createUserWithEmailAndPassword(this.auth, email, password);
 
-    doSignInWithEmailAndPassword = (email, password) =>
-        this.auth.signInWithEmailAndPassword(email, password);
+    doSignInWithEmailAndPassword = (email, password) => {
+        console.log("Email: ", email);
+        return signInWithEmailAndPassword(this.auth, email, password);
+    };
 
-    doSignOut = () => this.auth.signOut();
+    doSignOut = () => signOut(this.auth);
 
-    doPasswordReset = (email) => this.auth.sendPasswordResetEmail(email);
+    doPasswordReset = (email) => sendPasswordResetEmail(this.auth, email);
 }
 
 export default Firebase;

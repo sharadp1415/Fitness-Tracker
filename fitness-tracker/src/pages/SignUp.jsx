@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { withFirebase } from '../components/Firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { Link } from 'react-router-dom';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { Link} from 'react-router-dom';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -16,10 +16,10 @@ import Typography from '@material-ui/core/Typography';
 import useStyles from '../config/theme.signinup';
 import Copyright from '../components/Copyright';
 
-function SignIn(props) {
+function SignUp(props) {
   const classes = useStyles();
 
-  const initialUser = {id: null, email: '', password: '', error: null, auth: null}
+  const initialUser = {id: null, name: '', email: '', password: '', error: null, auth: null}
 
   const [user, setUser] = useState(initialUser);
 
@@ -28,17 +28,19 @@ function SignIn(props) {
     setUser({...user, [name]: value})
   }
 
-  const handleSubmit = () => {
-    props.firebase.doSignInWithEmailAndPassword(user.email, user.password)
+  const handleSubmit = e => {
+    // createUserWithEmailAndPassword(props.firebase.auth, user.email, user.password)
+    props.firebase.doCreateUserWithEmailAndPassword(user.email, user.password)
+    // Later add user also to database
     .then(authUser => {
-      setUser({initialUser})
+      setUser(initialUser);
     })
     .catch(error => {
       setUser({...user, error: error.message})
     });
   }
 
-  const isValid = user.email === '' || user.password === '';
+  const isValid = user.name === '' || user.email === '' || user.password === '';
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -50,13 +52,25 @@ function SignIn(props) {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Sign Up
           </Typography>
           <form 
             className={classes.form} 
             noValidate
             onSubmit={e => e.preventDefault()}
           >
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="name"
+              label="Name"
+              name="name"
+              autoFocus
+              value={user.name}
+              onChange={handleChange}
+            />
             <TextField
               variant="outlined"
               margin="normal"
@@ -84,28 +98,21 @@ function SignIn(props) {
             <Typography className={classes.error}>
               {user.error ? user.error : ''}
             </Typography>
-            <Link to="/dashboard">
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-                onClick={handleSubmit}
-                disabled={isValid}
-              >
-                Sign In
-              </Button>
-            </Link>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={handleSubmit}
+              disabled={isValid}
+            >
+              Sign up
+            </Button>
             <Grid container>
-              <Grid item xs>
-                <Link to="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
               <Grid item>
-                <Link to="/sign-up">
-                  Don't have an account? Sign Up
+                <Link to="/">
+                  {"Already have an account? Sign In"}
                 </Link>
               </Grid>
             </Grid>
@@ -117,10 +124,6 @@ function SignIn(props) {
       </Grid>
     </Grid>
   );
-
-  // return (
-  //   <h1>Please Work</h1>
-  // )
 };
 
-export default withFirebase(SignIn);
+export default withFirebase(SignUp);
